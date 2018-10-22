@@ -6,6 +6,7 @@
  		"gul_summaries": [
  			{
  				"aalcalc": true,
+ 				"summarycalc": true,
    				"eltcalc": true,
    				"id": 1,
    				"lec_output": true,
@@ -26,7 +27,7 @@
 		 },
 		 "model_version_id": "GMO",
 		 "module_supplier_id": "GEMFoundation",
-		 "number_of_samples": 10,
+		 "number_of_samples": 1000,
 		 "prog_id": 12,
 		 "source_tag": "gmo"
 	}

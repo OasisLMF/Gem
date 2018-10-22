@@ -51,10 +51,10 @@ damage_bin_dict.bin: damage_bin_dict.csv
 	damagebintobin < damage_bin_dict.csv > damage_bin_dict.bin
 
 footprint.idx: footprint.bin
-	gzip -d -c footprint.csv.gz | footprinttobin -n -i $(INTENSITY_BINS) > footprint.bin
+	gzip -d -c footprint.csv.gz | footprinttobin -i $(INTENSITY_BINS) > footprint.bin
 
 footprint.bin: footprint.csv.gz
-	gzip -d -c footprint.csv.gz | footprinttobin -n -i $(INTENSITY_BINS) > footprint.bin
+	gzip -d -c footprint.csv.gz | footprinttobin -i $(INTENSITY_BINS) > footprint.bin
 
 vulnerability.bin: vulnerability.csv
 	vulnerabilitytobin -d $(DAMAGE_BINS) \

@@ -25,7 +25,7 @@ class AreaPerilLookup(object):
     '''
 
     _lookup_data = index.Index()
-    _gridSpacing = 0.05  # cell grid spacing
+    _gridSpacing = 0.05 # cell grid spacing
 
     def __init__(self, areas_file=None):
         if areas_file:
@@ -41,12 +41,7 @@ class AreaPerilLookup(object):
         '''
         d = self._gridSpacing/2
         for r in data:
-            self._lookup_data.insert(
-                int(r['areaperil_id']), (
-                    float(r['lon'])-d, float(r['lat'])-d,
-                    float(r['lon'])+d, float(r['lat'])+d
-                )
-            )
+            self._lookup_data.insert(int(r['areaperil_id']), (float(r['lon'])-d, float(r['lat'])-d, float(r['lon'])+d, float(r['lat'])+d), obj={'id': int(r['areaperil_id']), 'imt': r['IMTs']})
 
     def validate_lat(self, lat):
         '''
@@ -90,17 +85,20 @@ class AreaPerilLookup(object):
 
         lat = location['lat']
         lon = location['lon']
+        imt = location['imt']
 
         if not (self.validate_lat(lat) & self.validate_lon(lon)):
             status = KEYS_STATUS_FAIL
             area_peril_id = None
             message = "Invalid lat/lon"
         else:
-            hits = list(self._lookup_data.intersection((
-                lon, lat, lon, lat), objects=False))
-            if(len(hits) > 0):
-                area_peril_id = hits[0]
-                status = KEYS_STATUS_SUCCESS
+            hits = list(self._lookup_data.intersection((lon,lat,lon,lat), objects='raw'))
+            if(len(hits)>0):
+                for item in hits:
+                    if(item['imt']==imt):
+                        area_peril_id = item['id']
+                        status = KEYS_STATUS_SUCCESS
+                        break
             else:
                 message = "No intersecting cell found"
 

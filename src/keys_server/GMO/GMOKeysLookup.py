@@ -69,6 +69,11 @@ class GMOKeysLookup(OasisBaseKeysLookup):
             'source_header': 'OCCTYPE',
             'csv_data_type': str,
             'validator': to_string, 'desc': 'Class #2'
+        },
+        'imt': {
+            'source_header': 'type',
+            'csv_data_type': str,
+            'validator': to_string, 'desc': 'Intensity Measure'
         }
     }
 
@@ -102,6 +107,12 @@ class GMOKeysLookup(OasisBaseKeysLookup):
         Process location rows - passed in as a pandas dataframe.
         """
 
+        # join IMTs with locs
+        vulnDict = pd.read_csv(os.path.join(self.keys_data_directory, 'vulnerability_dict.csv'))
+        loc_df = loc_df.merge(vulnDict, left_on="bldgclass", right_on="taxonomy")
+        pd.set_option('display.max_columns', 500)
+        # print(loc_df)
+        
         for i in range(len(loc_df)):
             #record = loc_df.iloc[i].to_dict()
             record = self._get_location_record(loc_df.iloc[i])
@@ -145,7 +156,7 @@ class GMOKeysLookup(OasisBaseKeysLookup):
         Construct a location record (dict) from the location item, which in this
         case is a row in a Pandas dataframe.
         """
-        # print "!! _get_location_record: {0}".format(loc_item)
+        # print("!! _get_location_record: {0}".format(loc_item))
 
         meta = self._LOCATION_RECORD_META
         return dict((

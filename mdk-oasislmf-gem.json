@@ -1,8 +1,8 @@
 {
     "all_source_exposures_file_path": "tests/data/dom-rep-146-all.csv", 
-    "source_exposures_file_path": "tests/data/dom-rep-146-all.csv", 
     "peak_source_exposures_file_path": "tests/data/dom-rep-146-peak.csv", 
-    "10_source_exposures_file_path": "tests/data/dom-rep-146-10-h.csv",
+    "10_source_exposures_file_path": "tests/data/dom-rep-146-10h.csv",
+    "source_exposures_file_path": "tests/data/dom-rep-146-all.csv", 
     "analysis_settings_json_file_path": "analysis_settings.json",
     "source_account_file_path": "tests/data/source-acc-dom-rep.csv", 
     "dont-touch" : "-------",
