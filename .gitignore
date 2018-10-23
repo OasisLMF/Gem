@@ -100,3 +100,6 @@ venv/
 
 oasis_build_utils
 runs
+*.bin
+footprint.csv.gz
+*.idx
