@@ -103,3 +103,4 @@ runs
 *.bin
 footprint.csv.gz
 *.idx
+run.out
