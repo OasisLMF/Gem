@@ -25,7 +25,6 @@ class AreaPerilLookup(object):
     '''
 
     _lookup_data = index.Index()
-    _gridSpacing = 0.05 # cell grid spacing
 
     def __init__(self, areas_file=None):
         if areas_file:
@@ -39,9 +38,8 @@ class AreaPerilLookup(object):
         Args:
             data: the lookup data.
         '''
-        d = self._gridSpacing/2
         for r in data:
-            self._lookup_data.insert(int(r['areaperil_id']), (float(r['lon'])-d, float(r['lat'])-d, float(r['lon'])+d, float(r['lat'])+d), obj={'id': int(r['areaperil_id']), 'imt': r['IMTs']})
+            self._lookup_data.insert(int(r['areaperil_id']), (float(r['xmin']), float(r['ymin']), float(r['xmax']), float(r['ymax'])), obj={'id': int(r['areaperil_id']), 'imt': r['IMTs']})
 
     def validate_lat(self, lat):
         '''
