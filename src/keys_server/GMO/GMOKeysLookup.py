@@ -56,6 +56,21 @@ class GMOKeysLookup(OasisBaseKeysLookup):
             'source_header': 'LATITUDE', 'csv_data_type': float,
             'validator': to_float, 'desc': 'Latitude'
         },
+        'county': {
+            'source_header': 'COUNTY',
+            'csv_data_type': str,
+            'validator': to_string, 'desc': 'County'
+        },
+        'state': {
+            'source_header': 'STATE',
+            'csv_data_type': str,
+            'validator': to_string, 'desc': 'State'
+        },
+        'country': {
+            'source_header': 'COUNTRY',
+            'csv_data_type': str,
+            'validator': to_string, 'desc': 'Country'
+        },
         'coverage': {
             'source_header': 'COV1', 'csv_data_type': int,
             'validator': to_int, 'desc': 'Coverage'

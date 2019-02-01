@@ -4,6 +4,7 @@ import io
 import csv
 import logging
 from rtree import index
+import pandas as pd
 
 from shapely.geometry import (
     Point,
@@ -24,22 +25,25 @@ class AreaPerilLookup(object):
     Functionality to perform an area peril lookup.
     '''
 
-    _lookup_data = index.Index()
+    _cell_index = index.Index()
+    _cell_dataframe = pd.DataFrame()
 
     def __init__(self, areas_file=None):
         if areas_file:
             with io.open(areas_file, 'r', encoding='utf-8') as f:
                 dr = csv.DictReader(f)
-                self.load_lookup_data(dr)
+                self.load_cell_index(dr)
+            self._cell_dataframe = pd.read_csv(areas_file)
 
-    def load_lookup_data(self, data):
+    def load_cell_index(self, data):
         '''
         Load the lookup data.
         Args:
             data: the lookup data.
         '''
         for r in data:
-            self._lookup_data.insert(int(r['areaperil_id']), (float(r['xmin']), float(r['ymin']), float(r['xmax']), float(r['ymax'])), obj={'id': int(r['areaperil_id']), 'imt': r['IMTs']})
+            if float(r['xmin']) > -9990:
+                self._cell_index.insert(int(r['areaperil_id']), (float(r['xmin']), float(r['ymin']), float(r['xmax']), float(r['ymax'])), obj={'id': int(r['areaperil_id']), 'imt': r['IMTs']})
 
     def validate_lat(self, lat):
         '''
@@ -81,24 +85,40 @@ class AreaPerilLookup(object):
         area_peril_id = None
         message = ''
 
+        print(location)
         lat = location['lat']
         lon = location['lon']
         imt = location['imt']
+        county = location['county']
+        state = location['state']
+        print("state:", state)
+        print("county:", county)
+        print("imt:", imt)
 
-        if not (self.validate_lat(lat) & self.validate_lon(lon)):
-            status = KEYS_STATUS_FAIL
-            area_peril_id = None
-            message = "Invalid lat/lon"
-        else:
-            hits = list(self._lookup_data.intersection((lon,lat,lon,lat), objects='raw'))
+        if (self.validate_lat(lat) & self.validate_lon(lon) & ((abs(lon)>0.01) | (abs(lat)>0.01))):
+            hits = list(self._cell_index.intersection((lon,lat,lon,lat), objects='raw'))
             if(len(hits)>0):
                 for item in hits:
                     if(item['imt']==imt):
                         area_peril_id = item['id']
                         status = KEYS_STATUS_SUCCESS
                         break
-            else:
-                message = "No intersecting cell found"
+
+        if (area_peril_id == None):
+            # try county
+            if type(county) == str:
+                admin = self._cell_dataframe[(self._cell_dataframe['NAME_2']==county) & (self._cell_dataframe['IMTs']==imt)]
+                if(admin.shape[0]>0):
+                    area_peril_id = admin['areaperil_id'].iloc[0]
+                    status = KEYS_STATUS_SUCCESS
+
+        if (area_peril_id == None):
+            # try state
+            if type(state) == str:
+                admin = self._cell_dataframe[(self._cell_dataframe['NAME_1']==state) & (self._cell_dataframe['IMTs']==imt)]
+                if(admin.shape[0]>0):
+                    area_peril_id = admin['areaperil_id'].iloc[0]
+                    status = KEYS_STATUS_SUCCESS
 
         return {
             'status': status,
