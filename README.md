@@ -15,6 +15,20 @@ model_version [0.0.0.1]: 0.0.0.1
 GEM Foundation GMO Model README
 ====================================================================================
 
+## Installing and running the model
+
+The easiest way to test the model is under the [oasislmf python package](https://github.com/OasisLMF/OasisLMF). If you have access to a unix computer, this can be done as follows:
+```
+pip install oasislmf
+git clone https://github.com/imprompt/oasis-test.git
+cd oasis-test/model_data/GMO
+wget http://sunstonerisk.com/files/domrep/footprint.csv.gz
+cd ../..
+./run-model.sh
+```
+This will place output in the folder runs.
+You can change the model settings, including the exposure used for input, by editing the file mdk-oasislmf-gem.json
+
 ## Cloning the repository
 
 You can clone this repository using HTTPS or SSH, but it is recommended that that you use SSH: first ensure that you have generated an SSH key pair on your local machine and add the public key of that pair to your GitHub account (use the GitHub guide at https://help.github.com/articles/connecting-to-github-with-ssh/). Then run
