@@ -1,23 +1,9 @@
 {
-    "all_source_exposures_file_path": "tests/data/dom-rep-146-all.csv", 
-    "all_county_source_exposures_file_path": "tests/data/dom-rep-146-all-county.csv", 
-    "peak_source_exposures_file_path": "tests/data/dom-rep-146-peak.csv", 
-    "peak_zone_source_exposures_file_path": "tests/data/dom-rep-146-peak-zone.csv", 
-    "10_source_exposures_file_path": "tests/data/dom-rep-146-10h.csv",
-    "source_exposures_file_path": "tests/data/dom-rep-146-all-county.csv", 
-    "analysis_settings_json_file_path": "analysis_settings.json",
-    "source_account_file_path": "tests/data/source-acc-dom-rep.csv", 
-    "dont-touch" : "-------",
-    "source_exposures_validation_file_path": "flamingo/generic_model/ValidationFiles/Generic_Earthquake_SourceLoc.xsd",
-    "source_account_validation_file_path": "flamingo/generic_model/ValidationFiles/Generic_CanAcc_A.xsd",
-    "source_to_canonical_exposures_transformation_file_path": "flamingo/generic_model/TransformationFiles/MappingMapToGeneric_Earthquake_CanLoc_A.xslt",
-    "source_to_canonical_account_transformation_file_path": "flamingo/generic_model/TransformationFiles/MappingMapToGeneric_CanAcc_A.xslt",
-    "canonical_exposures_validation_file_path": "flamingo/generic_model/ValidationFiles/Generic_Earthquake_CanLoc_B.xsd",
-    "canonical_to_model_exposures_transformation_file_path": "flamingo/generic_model/TransformationFiles/MappingMapToGeneric_Earthquake_ModelLoc.xslt", 
+    "source_exposure_file_path": "tests/data/dom-rep-146-oed-location.csv",
+    "source_accounts_file_path": "tests/data/dom-rep-146-oed-account.csv",
     "model_data_path": "model_data/GMO",
-    "canonical_account_profile_json_path": "oasislmf-piquake-canonical-acc-profile.json",
-    "canonical_exposures_profile_json_path": "oasislmf-piquake-canonical-loc-profile.json",
+    "analysis_settings_file_path": "analysis_settings.json",
+    "lookup_package_path": "src/keys_server/GMO",
     "keys_data_path": "keys_data/GMO",
-    "model_version_file_path": "keys_data/GMO/ModelVersion.csv", 
-    "lookup_package_path": "src/keys_server"
+    "model_version_file_path": "keys_data/GMO/ModelVersion.csv"
 }
