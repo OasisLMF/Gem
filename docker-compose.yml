@@ -84,7 +84,7 @@ services:
      - ./keys_data:/var/oasis/keys_data/:rw
      - ${OASIS_MEDIA_ROOT:-./docker-shared-fs}:/shared-fs:rw
   server-db:
-    image: mysql
+    image: mysql:8.0.15
     command:
       - --default-authentication-plugin=mysql_native_password
     environment:
@@ -95,7 +95,7 @@ services:
     volumes:
       - ${OASIS_DOCKER_DB_DATA_DIR:-./db-data}/server:/var/lib/mysql/:rw
   celery-db:
-    image: mysql
+    image: mysql:8.0.15
     command:
       - --default-authentication-plugin=mysql_native_password
     environment:
