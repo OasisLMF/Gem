@@ -1,7 +1,7 @@
 version: '3'
 services:
   server:
-   image: coreoasis/api_server:latest
+   image: coreoasis/api_server:${OASIS_API_VER}
    ports:
      - 8000:8000
    links:
@@ -10,7 +10,7 @@ services:
      - rabbit
    environment:
      - OASIS_ADMIN_USER=admin
-     - OASIS_ADMIN_PASS=password 
+     - OASIS_ADMIN_PASS=password
      - OASIS_DEBUG=1
      - OASIS_RABBIT_HOST=rabbit
      - OASIS_RABBIT_PORT=5672
@@ -30,9 +30,9 @@ services:
      - STARTUP_RUN_MIGRATIONS=true
    volumes:
      - ${OASIS_MEDIA_ROOT:-./docker-shared-fs}:/shared-fs:rw
-     - ./model_resource.json:/var/www/oasis/src/server/static/model_resource.json
+     - ./meta-data/model_resource.json:/var/www/oasis/src/server/static/model_resource.json
   worker-monitor:
-   image: coreoasis/api_server:latest
+   image: coreoasis/api_server:${OASIS_API_VER}
    command: [wait-for-server, 'server:8000', celery, worker, -A, src.server.oasisapi, --loglevel=INFO]
    links:
      - server-db
@@ -58,10 +58,12 @@ services:
    volumes:
      - ${OASIS_MEDIA_ROOT:-./docker-shared-fs}:/shared-fs:rw
   worker:
-    image: coreoasis/gem_model_worker
+    image: coreoasis/gem_model_worker:${MODEL_VER}
     build:
       context: .
-      dockerfile: Dockerfile.gem_model_worker
+      dockerfile: ./docker/Dockerfile.gem_model_worker
+      args:
+        - worker_ver=${OASIS_API_VER}
     links:
      - celery-db
      - rabbit:myrabbit
@@ -69,6 +71,7 @@ services:
      - OASIS_MODEL_SUPPLIER_ID=GemFoundation
      - OASIS_MODEL_ID=GMO
      - OASIS_MODEL_VERSION_ID=1
+     - OASIS_DEBUG_MODE=true
      - OASIS_RABBIT_HOST=rabbit
      - OASIS_RABBIT_PORT=5672
      - OASIS_RABBIT_USER=rabbit
@@ -80,8 +83,7 @@ services:
      - OASIS_CELERY_DB_NAME=celery
      - OASIS_CELERY_DB_PORT=3306
     volumes:
-     - ./model_data:/var/oasis/model_data/:rw
-     - ./keys_data:/var/oasis/keys_data/:rw
+     - ./:/var/oasis/model_data/:rw
      - ${OASIS_MEDIA_ROOT:-./docker-shared-fs}:/shared-fs:rw
   server-db:
     image: mysql:8.0.15
@@ -106,6 +108,7 @@ services:
     volumes:
       - ${OASIS_DOCKER_DB_DATA_DIR:-./db-data}/celery:/var/lib/mysql/:rw
   rabbit:
+    restart: always
     image: rabbitmq:3-management
     environment:
       - RABBITMQ_DEFAULT_USER=rabbit
@@ -113,16 +116,13 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
-  flower:
-    image: iserko/docker-celery-flower 
-    ports:
-      - 5555:5555
+  user-interface:
+    image: coreoasis/oasisui_app:${OASIS_UI_VER}
     environment:
-      - CELERY_BROKER_URL=amqp://rabbit:rabbit@rabbit:5672
-    entrypoint:
-      - flower 
-      - --port=5555 
-      - --broker_api=http://rabbit:rabbit@rabbit:15672/api/
-    links:
-     - celery-db
-     - rabbit
+     - API_IP=server
+     - API_PORT=8000
+     - API_VERSION=v1
+     - API_SHARE_FILEPATH=./downloads
+     - OASIS_ENVIRONMENT=oasis_localhost
+    ports:
+     - 8080:3838

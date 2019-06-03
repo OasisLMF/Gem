@@ -10,11 +10,10 @@ import os
 import pandas as pd
 
 # Imports from Oasis core repos + subpackages or modules within keys_server
-from oasislmf.utils.defaults import (
-    COVERAGE_TYPES,
-    PERILS,
-    OASIS_KEYS_STATUS
-)
+from oasislmf.utils.coverages import COVERAGE_TYPES
+from oasislmf.utils.peril import PERILS
+from oasislmf.utils.status import OASIS_KEYS_STATUS
+
 KEYS_STATUS_FAIL = OASIS_KEYS_STATUS['fail']
 KEYS_STATUS_NOMATCH = OASIS_KEYS_STATUS['nomatch']
 KEYS_STATUS_SUCCESS = OASIS_KEYS_STATUS['success']
@@ -92,7 +91,9 @@ gem_taxonomy_by_oed_occupancy_and_number_of_storeys_df = pd.DataFrame.from_dict(
     'constructioncode': ['5156', '5150', '5150', '5150', '5150', '5150', '5150', '5109', '5109', '5109', '5109', '5109', '5109', '5109', '5105', '5105', '5105', '5105', '5105', '5105', '5105', '5105', '5101', '5103', '5103', '5103', '5000', '5050', '5050', '5050', '5050', '5050'],
     'numberofstoreys': [1, 2, 2, 3, 2, 3, 1, 2, 3, 2, 3, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 2, 2, 1, 2, 1, 1, 1, 2, 1, -1],
     'taxonomy': ['CR-PC_LWAL-DNO_H1', 'CR_LFINF-DNO_H2', 'CR_LFINF-DUH_H2', 'CR_LFINF-DUH_H3', 'CR_LFINF-DUM_H2', 'CR_LFINF-DUM_H3', 'CR_LFM-DNO_H1', 'MCF_LWAL-DNO_H2', 'MCF_LWAL-DNO_H3', 'MCF_LWAL-DUH_H2',	'MCF_LWAL-DUH_H3', 'MCF_LWAL-DUM_H2','MCF_LWAL-DUM_H3', 'MR_LWAL-DNO_H1','MR_LWAL-DNO_H2', 'MR_LWAL-DNO_H3','MR_LWAL-DUH_H1', 'MR_LWAL-DUH_H2', 'MR_LWAL-DUH_H3', 'MR_LWAL-DUM_H1', 'MR_LWAL-DUM_H2', 'MR_LWAL-DUM_H3', 'MUR-ADO_LWAL-DNO_H2', 'MUR-ST_LWAL-DNO_H2', 'MUR_LWAL-DNO_H1', 'MUR_LWAL-DNO_H2', 'UNK_H1', 'W-WBB_LPB-DNO_H1', 'W-WLI_LWAL-DNO_H1', 'W-WLI_LWAL-DNO_H2', 'W-WS_LPB-DNO_H1', 'W-']
-})
+    },
+    dtype='int64'
+)
 
 class GMOKeysLookup(OasisBaseKeysLookup):
 
@@ -178,7 +179,7 @@ class GMOKeysLookup(OasisBaseKeysLookup):
         """
         Process location rows - passed in as a pandas dataframe.
         """
-
+        
         # join IMTs with locs
         vulnDict = pd.read_csv(os.path.join(self.keys_data_directory, 'vulnerability_dict.csv'))
 

@@ -1,7 +1,0 @@
-FROM coreoasis/model_worker:latest
-
-COPY ./requirements.txt /tmp/ 
-RUN pip install -r /tmp/requirements.txt
-
-COPY src/keys_server/GMO /var/oasis/model_data/ 
-COPY ./oasislmf.json /var/oasis/model_data/oasislmf-oed.json
