@@ -10,6 +10,7 @@ node {
         [$class: 'StringParameterDefinition',  name: 'MODEL_NAME', defaultValue: 'GMO'],
         [$class: 'StringParameterDefinition',  name: 'MODEL_SUPPLIER', defaultValue: 'GemFoundation'],
         [$class: 'StringParameterDefinition',  name: 'MODEL_BRANCH', defaultValue: BRANCH_NAME],
+        [$class: 'StringParameterDefinition',  name: 'MODEL_DATA', defaultValue: '/mnt/ebs/GEM/model_data/1.0'],
         [$class: 'StringParameterDefinition',  name: 'OASISLMF_BRANCH', defaultValue: ''],
         [$class: 'StringParameterDefinition',  name: 'TAG_RELEASE', defaultValue: BRANCH_NAME.split('/').last() + "-${BUILD_NUMBER}"],
         [$class: 'StringParameterDefinition',  name: 'TAG_OASIS', defaultValue: ''],
@@ -79,7 +80,8 @@ node {
             env.MODEL_SUPPLIER   = model_supplier
             env.MODEL_VARIENT    = model_varient
             env.MODEL_ID         = '1'
-            env.OASIS_MODEL_DATA_DIR = "${env.WORKSPACE}/${model_workspace}"
+            env.OASIS_MODEL_REPO_DIR = "${env.WORKSPACE}/${model_workspace}"
+            env.OASIS_MODEL_DATA_DIR = params.MODEL_DATA
             env.COMPOSE_PROJECT_NAME = UUID.randomUUID().toString().replaceAll("-","")
 
             // Check if versions given, fallback to load from `data_version.json`
@@ -119,7 +121,8 @@ node {
 
         stage('Run: API Server') {
             dir(build_workspace) {
-                sh PIPELINE + " start_model"
+                //sh PIPELINE + " start_model"
+                sh "docker-compose -f compose/oasis.platform.yml -f compose/model.worker.data.yml up -d"
             }
         }
 
@@ -127,7 +130,9 @@ node {
         for(int i=0; i < api_server_tests.size(); i++) {
             stage("Run : ${api_server_tests[i]}"){
                 dir(build_workspace) {
-                    sh PIPELINE + " run_test --test-case ${api_server_tests[i]}"
+                    compose = "docker-compose -f compose/oasis.platform.yml -f compose/model.worker.data.yml -f compose/model.tester.yml "
+                    run_tester = "run --rm '--entrypoint=bash -c ' model_tester './runtest --test-case ${api_server_tests[i]}'"
+                    sh compose + run_tester
                 }
             }
         }
