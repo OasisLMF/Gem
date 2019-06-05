@@ -36,10 +36,9 @@ node {
     String model_branch     = params.MODEL_BRANCH
     String model_git_url    = "git@github.com:OasisLMF/gem.git"
     String model_workspace  = "${model_varient}_workspace"
-    String model_image      = "corelogic/cl_earthquake"
-    String model_dockerfile = "docker/Dockerfile"
+    String model_image      = "coreoasis/gem_model_worker"
+    String model_dockerfile = "docker/Dockerfile.gem_model_worker"
     String model_test_dir  = "${env.WORKSPACE}/${model_workspace}/tests/"
-
 
 
     try {
