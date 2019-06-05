@@ -34,7 +34,7 @@ node {
     String model_supplier   = params.MODEL_SUPPLIER
     String model_varient    = params.MODEL_NAME
     String model_branch     = params.MODEL_BRANCH
-    String model_git_url    = "git@github.com:OasisLMF/${model_supplier}.git"
+    String model_git_url    = "git@github.com:OasisLMF/gem.git"
     String model_workspace  = "${model_varient}_workspace"
     String model_image      = "corelogic/cl_earthquake"
     String model_dockerfile = "docker/Dockerfile"
