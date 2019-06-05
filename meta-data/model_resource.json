@@ -1,0 +1,14 @@
+{
+    "model_settings":[
+    ],
+    "lookup_settings":[
+        {
+            "PerilCodes":{
+                "type":"dictionary",
+                "values":{
+                    "QEQ": "Single Peril: EarthQuake only"
+                }
+            }
+        }
+    ]
+}

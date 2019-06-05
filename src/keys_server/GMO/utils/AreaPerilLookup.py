@@ -11,11 +11,10 @@ from shapely.geometry import (
     MultiPoint,
 )
 
-from oasislmf.utils.defaults import (
-    COVERAGE_TYPES,
-    PERILS,
-    OASIS_KEYS_STATUS
-)
+from oasislmf.utils.coverages import COVERAGE_TYPES
+from oasislmf.utils.peril import PERILS
+from oasislmf.utils.status import OASIS_KEYS_STATUS
+
 KEYS_STATUS_FAIL = OASIS_KEYS_STATUS['fail']['id']
 KEYS_STATUS_NOMATCH = OASIS_KEYS_STATUS['nomatch']['id']
 KEYS_STATUS_SUCCESS = OASIS_KEYS_STATUS['success']['id']

@@ -56,6 +56,9 @@ footprint.idx: footprint.bin
 footprint.bin: footprint.csv.gz
 	gzip -d -c footprint.csv.gz | footprinttobin -i $(INTENSITY_BINS) > footprint.bin
 
+footprint.csv.gz:
+	wget -N -O footprint.csv.gz http://sunstonerisk.com/files/domrep/footprint.csv.gz
+
 vulnerability.bin: vulnerability.csv
 	vulnerabilitytobin -d $(DAMAGE_BINS) \
 		< vulnerability.csv > vulnerability.bin
@@ -71,7 +74,6 @@ items.bin: items.csv
 
 occurrence.bin: occurrence.csv intensity_bin_dict.csv
 	occurrencetobin -P$(INVESTIGATION_TIME) < occurrence.csv > occurrence.bin
-
 
 returnperiods.bin: returnperiods.csv
 	returnperiodtobin < returnperiods.csv > returnperiods.bin 
