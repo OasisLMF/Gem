@@ -101,7 +101,7 @@ class GMOKeysLookup(OasisBaseKeysLookup):
 
     _LOCATION_RECORD_META = {
         'id': {
-            'source_header': 'LocNumber', 'csv_data_type': int,
+            'source_header': 'loc_id', 'csv_data_type': int,
             'validator': to_int, 'desc': 'Location ID'
         },
         'lon': {
@@ -224,7 +224,7 @@ class GMOKeysLookup(OasisBaseKeysLookup):
                 message = 'No area peril or vulnerability match'
 
             record = {
-                "locnumber": record['id'],
+                "loc_id": record['id'],
                 "peril_id": PERILS['earthquake']['id'],
                 "coverage_type": COVERAGE_TYPES['buildings']['id'],
                 "area_peril_id": area_peril_rec['area_peril_id'],
