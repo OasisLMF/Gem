@@ -284,8 +284,8 @@ class GMOKeysLookup(OasisBaseKeysLookup):
                     "message": message,
                     "status": status
                 }
-                results.append(record)
-            return(results)
+            results.append(record)
+        return(results)
 
     def _get_location_record(self, loc_item):
         """
