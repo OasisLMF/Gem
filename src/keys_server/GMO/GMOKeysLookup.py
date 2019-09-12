@@ -166,6 +166,9 @@ class GMOKeysLookup(OasisBaseKeysLookup):
             model_version
         )
 
+        # join IMTs with locs
+        self.vulnDict = pd.read_csv(os.path.join(self.keys_data_directory, 'vulnerability_dict.csv'))
+
         self.area_peril_lookup = AreaPerilLookup(
             areas_file=os.path.join(
                 self.keys_data_directory, 'areaperil_dict.csv')
@@ -181,9 +184,6 @@ class GMOKeysLookup(OasisBaseKeysLookup):
         """
         Process location rows - passed in as a pandas dataframe.
         """
-        
-        # join IMTs with locs
-        vulnDict = pd.read_csv(os.path.join(self.keys_data_directory, 'vulnerability_dict.csv'))
 
         # Mapping to OED
         set_dtype = {'constructioncode': 'int',
@@ -192,9 +192,9 @@ class GMOKeysLookup(OasisBaseKeysLookup):
             gem_taxonomy_by_oed_occupancy_and_number_of_storeys_df.astype(set_dtype),
             on=['constructioncode', 'numberofstoreys'])
 
-        loc_df = loc_df.merge(vulnDict, on="taxonomy")
+        loc_df = loc_df.merge(self.vulnDict, on="taxonomy")
         pd.set_option('display.max_columns', 500)
-        
+
         for i in range(len(loc_df)):
             record = self._get_location_record(loc_df.iloc[i])
 
@@ -233,6 +233,59 @@ class GMOKeysLookup(OasisBaseKeysLookup):
                 "status": status
             }
             yield(record)
+
+    def process_locations_multiproc(self, locations):
+        """
+        Process location rows - passed in as a pandas dataframe.
+        """
+
+        # Mapping to OED
+        set_dtype = {'constructioncode': 'int',
+                     'numberofstoreys': 'int'}
+        loc_df = locations.astype(set_dtype).merge(
+            gem_taxonomy_by_oed_occupancy_and_number_of_storeys_df.astype(set_dtype),
+            on=['constructioncode', 'numberofstoreys'])
+
+        loc_df = loc_df.merge(self.vulnDict, on="taxonomy")
+        pd.set_option('display.max_columns', 500)
+
+        results = []
+        for i in range(len(loc_df)):
+            record = self._get_location_record(loc_df.iloc[i])
+
+            area_peril_rec = self.area_peril_lookup.do_lookup_location(record)
+
+            vuln_peril_rec = \
+                self.vulnerability_lookup.do_lookup_location(record)
+            status = message = ''
+
+            if area_peril_rec['status'] == \
+                    vuln_peril_rec['status'] == KEYS_STATUS_SUCCESS:
+                status = KEYS_STATUS_SUCCESS
+            elif (
+                area_peril_rec['status'] == KEYS_STATUS_FAIL or
+                vuln_peril_rec['status'] == KEYS_STATUS_FAIL
+            ):
+                status = KEYS_STATUS_FAIL
+                message = '{}, {}'.format(
+                    area_peril_rec['message'],
+                    vuln_peril_rec['message']
+                )
+            else:
+                status = KEYS_STATUS_NOMATCH
+                message = 'No area peril or vulnerability match'
+
+            record = {
+                    "loc_id": record['id'],
+                    "peril_id": PERILS['earthquake']['id'],
+                    "coverage_type": COVERAGE_TYPES['buildings']['id'],
+                    "area_peril_id": area_peril_rec['area_peril_id'],
+                    "vulnerability_id": vuln_peril_rec['vulnerability_id'],
+                    "message": message,
+                    "status": status
+                }
+                results.append(record)
+            return(results)
 
     def _get_location_record(self, loc_item):
         """
