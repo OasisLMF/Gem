@@ -204,9 +204,9 @@ class GMOKeysLookup(OasisBaseKeysLookup):
                 self.vulnerability_lookup.do_lookup_location(record)
             status = message = ''
 
-            print(area_peril_rec)
-            print(vuln_peril_rec)
-            print(KEYS_STATUS_SUCCESS)
+            # print(area_peril_rec)
+            # print(vuln_peril_rec)
+            # print(KEYS_STATUS_SUCCESS)
             if area_peril_rec['status'] == \
                     vuln_peril_rec['status'] == KEYS_STATUS_SUCCESS:
                 status = KEYS_STATUS_SUCCESS
