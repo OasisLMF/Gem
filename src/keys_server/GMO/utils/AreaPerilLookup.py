@@ -87,15 +87,15 @@ class AreaPerilLookup(object):
         area_peril_id = None
         message = ''
 
-        print(location)
+        #print(location)
         lat = location['lat']
         lon = location['lon']
         imt = location['imt']
         county = location['county']
         state = location['state']
-        print("state:", state)
-        print("county:", county)
-        print("imt:", imt)
+       # print("state:", state)
+       # print("county:", county)
+       # print("imt:", imt)
 
         if (self.validate_lat(lat) & self.validate_lon(lon) & ((abs(lon)>0.01) | (abs(lat)>0.01))):
             hits = list(self._cell_index.intersection((lon,lat,lon,lat), objects='raw'))
