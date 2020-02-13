@@ -1,0 +1,9 @@
+{
+    "model_settings":{
+     },
+    "lookup_settings":{
+        "supported_perils":[
+           {"id": "QEQ", "desc": "Single Peril: EarthQuake only"}
+        ]
+    }
+}
