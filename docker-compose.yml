@@ -30,7 +30,6 @@ services:
      - STARTUP_RUN_MIGRATIONS=true
    volumes:
      - ${OASIS_MEDIA_ROOT:-./docker-shared-fs}:/shared-fs:rw
-     - ./meta-data/model_resource.json:/var/www/oasis/src/server/static/model_resource.json
   worker-monitor:
    image: coreoasis/api_server:${OASIS_API_VER}
    command: [wait-for-server, 'server:8000', celery, worker, -A, src.server.oasisapi, --loglevel=INFO]
@@ -58,12 +57,7 @@ services:
    volumes:
      - ${OASIS_MEDIA_ROOT:-./docker-shared-fs}:/shared-fs:rw
   worker:
-    image: coreoasis/gem_model_worker:${MODEL_VER}
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile.gem_model_worker
-      args:
-        - worker_ver=${OASIS_API_VER}
+    image: coreoasis/model_worker:${MODEL_VER}
     links:
      - celery-db
      - rabbit:myrabbit
