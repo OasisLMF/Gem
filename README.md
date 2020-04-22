@@ -1,17 +1,3 @@
-```
-project_name [OM]: GEM Model for OASIS (test)
-project_slug [GEMModelforOASIS(test)]: gemoasismodel
-project_short_description [Oasis Model]: A GEM Model for the OASIS framework
-project_maintainer [<full name of primary project maintainer>]: GEM Foundation
-project_maintainer_email [<primary GitHub account email of primary project maintainer>]: devops@openquake.org
-version [0.0.1]: 
-primary_language [Python]: 
-organization [OasisLMF]: GEM Foundation
-model_identifier [OM]: GMO
-model_version [0.0.0.1]: 0.0.0.1
-```
-
-
 GEM Foundation GMO Model README
 ====================================================================================
 
@@ -32,4 +18,4 @@ To run using the full oasis platform you'll need a system with [docker](https://
 On linux systems there is a launch script `./run-platform.sh` which start up the GEM model and Oasis Platform. Once running you can assess these via the following URL's
 
 * [Local link - User Interface](http://localhost:8080/).
-* [local link - Oasis API](http://localhost:8000/) 
+* [Local link - Oasis API](http://localhost:8000/) 
