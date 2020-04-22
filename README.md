@@ -19,3 +19,8 @@ On linux systems there is a launch script `./run-platform.sh` which start up the
 
 * [Local link - User Interface](http://localhost:8080/).
 * [Local link - Oasis API](http://localhost:8000/) 
+
+
+## Forked from 
+* [imprompt/oasis-test](https://github.com/imprompt/oasis-test)
+* [pslh/oasis-test](https://github.com/pslh/oasis-test)
