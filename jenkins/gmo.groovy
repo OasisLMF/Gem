@@ -11,7 +11,7 @@ node {
         [$class: 'StringParameterDefinition',  name: 'MODEL_SUPPLIER', defaultValue: 'GemFoundation'],
         [$class: 'StringParameterDefinition',  name: 'MODEL_BRANCH', defaultValue: BRANCH_NAME],
         [$class: 'StringParameterDefinition',  name: 'MODEL_DATA', defaultValue: '/mnt/ebs/GEM/model_data/1.0'],
-        [$class: 'StringParameterDefinition',  name: 'OASISLMF_BRANCH', defaultValue: ''],
+        [$class: 'StringParameterDefinition',  name: 'MDK_BRANCH', defaultValue: 'develop'],
         [$class: 'StringParameterDefinition',  name: 'TAG_RELEASE', defaultValue: BRANCH_NAME.split('/').last() + "-${BUILD_NUMBER}"],
         [$class: 'StringParameterDefinition',  name: 'TAG_OASIS', defaultValue: ''],
         [$class: 'StringParameterDefinition',  name: 'RUN_TESTS', defaultValue: '0_case'],
@@ -40,6 +40,12 @@ node {
     String model_image      = "coreoasis/model_worker"
     String model_test_dir  = "${env.WORKSPACE}/${model_workspace}/tests/"
 
+    // Update MDK branch based on model branch
+    if (model_branch.matches("master") || model_branch.matches("hotfix/(.*)")){
+        MDK_BRANCH='master'
+    } else {
+        MDK_BRANCH=params.MDK_BRANCH
+    }
 
     try {
         parallel(
@@ -107,6 +113,12 @@ node {
 
             // Print ENV
             sh  PIPELINE + ' print_model_vars'
+        }
+
+        stage('Build Worker'){
+            dir(build_workspace) {
+                sh  "docker build --no-cache -f docker/Dockerfile.worker-git --pull --build-arg worker_ver=${params.MDK_BRANCH} -t coreoasis/model_worker:${params.TAG_RELEASE} ."
+            }
         }
 
         stage('Run: API Server') {
