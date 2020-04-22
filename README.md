@@ -29,4 +29,7 @@ You can change the model settings, including the exposure used for input, by edi
 ## Running the GEM using docker 
 
 To run using the full oasis platform you'll need a system with [docker](https://docs.docker.com/get-docker/) and [docker-compose](https://docs.docker.com/compose/install/) installed.
-On linux systems there is a launch script `./run-platform.sh` which start up the model worker, [Oasis API](http://localhost:8000/) and [User Interface](http://localhost:8080/).
+On linux systems there is a launch script `./run-platform.sh` which start up the GEM model and Oasis Platform. Once running you can assess these via the following URL's
+
+* [Local link - User Interface](http://localhost:8080/).
+* [local link - Oasis API](http://localhost:8000/) 
