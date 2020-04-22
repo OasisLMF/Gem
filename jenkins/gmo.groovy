@@ -37,8 +37,7 @@ node {
     String model_branch     = params.MODEL_BRANCH
     String model_git_url    = "git@github.com:OasisLMF/gem.git"
     String model_workspace  = "${model_varient}_workspace"
-    String model_image      = "coreoasis/gem_model_worker"
-    String model_dockerfile = "docker/Dockerfile.gem_model_worker"
+    String model_image      = "coreoasis/model_worker"
     String model_test_dir  = "${env.WORKSPACE}/${model_workspace}/tests/"
 
 
@@ -108,15 +107,6 @@ node {
 
             // Print ENV
             sh  PIPELINE + ' print_model_vars'
-        }
-
-        stage('Build:'){
-            dir(model_workspace) {
-                 if (params.OASISLMF_BRANCH?.trim()) {
-                     sh "sed -i 's|.*oasislmf.*|-e git+git://github.com/OasisLMF/OasisLMF.git@${params.OASISLMF_BRANCH}#egg=oasislmf|g' requirements.txt"
-                 }
-                 sh "docker build --no-cache -f ${model_dockerfile} --build-arg worker_ver=${env.TAG_RUN_PLATFORM} -t ${model_image}:${env.TAG_RELEASE} ."
-            }
         }
 
         stage('Run: API Server') {
