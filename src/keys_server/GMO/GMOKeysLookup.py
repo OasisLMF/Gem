@@ -87,11 +87,39 @@ def to_float(val):
 # END - deprecated oasislmf.utils.values
 #
 
+""" ---- Implementation note ----
+
+In the original lookup implementation each location can map to multiple vulnerability ids,
+each with difference levels of ductility and or material type.
+
+Note from Malcolm:
+   Ductility is largely a product of materials, with unreinforced
+   masonry being the worst and wood the best.  The reason it’s probably
+   not explicitly included in commercial cat models is
+   likely that the ductility for a given material is largely a function of age,
+   since better construction codes usually leads to more ductile structures.
+   Age usually is explicitly included in cat models wheres
+   the GEM functions capture this through the construction itself.
+
+Original taxonomy:
+    gem_taxonomy_by_oed_occupancy_and_number_of_storeys_df = pd.DataFrame.from_dict({
+        'constructioncode': ['5156', '5150', '5150', '5150', '5150', '5150', '5150', '5109', '5109', '5109', '5109', '5109', '5109', '5109', '5105', '5105', '5105', '5105', '5105', '5105', '5105', '5105', '5101', '5103', '5103', '5103', '5000', '5050', '5050', '5050', '5050', '5050'],
+        'numberofstoreys': [1, 2, 2, 3, 2, 3, 1, 2, 3, 2, 3, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 2, 2, 1, 2, 1, 1, 1, 2, 1, -1],
+        'taxonomy': ['CR-PC_LWAL-DNO_H1', 'CR_LFINF-DNO_H2', 'CR_LFINF-DUH_H2', 'CR_LFINF-DUH_H3', 'CR_LFINF-DUM_H2', 'CR_LFINF-DUM_H3', 'CR_LFM-DNO_H1', 'MCF_LWAL-DNO_H2', 'MCF_LWAL-DNO_H3', 'MCF_LWAL-DUH_H2',	'MCF_LWAL-DUH_H3', 'MCF_LWAL-DUM_H2','MCF_LWAL-DUM_H3', 'MR_LWAL-DNO_H1','MR_LWAL-DNO_H2', 'MR_LWAL-DNO_H3','MR_LWAL-DUH_H1', 'MR_LWAL-DUH_H2', 'MR_LWAL-DUH_H3', 'MR_LWAL-DUM_H1', 'MR_LWAL-DUM_H2', 'MR_LWAL-DUM_H3', 'MUR-ADO_LWAL-DNO_H2', 'MUR-ST_LWAL-DNO_H2', 'MUR_LWAL-DNO_H1', 'MUR_LWAL-DNO_H2', 'UNK_H1', 'W-WBB_LPB-DNO_H1', 'W-WLI_LWAL-DNO_H1', 'W-WLI_LWAL-DNO_H2', 'W-WS_LPB-DNO_H1', 'W-']
+    })
+
+The below was changed so that each unique combination of ('constructioncode', 'numberofstoreys')
+maps to a single 'taxonomy' code
+
+"""
+
 gem_taxonomy_by_oed_occupancy_and_number_of_storeys_df = pd.DataFrame.from_dict({
-    'constructioncode': ['5156', '5150', '5150', '5150', '5150', '5150', '5150', '5109', '5109', '5109', '5109', '5109', '5109', '5109', '5105', '5105', '5105', '5105', '5105', '5105', '5105', '5105', '5101', '5103', '5103', '5103', '5000', '5050', '5050', '5050', '5050', '5050'],
-    'numberofstoreys': [1, 2, 2, 3, 2, 3, 1, 2, 3, 2, 3, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 2, 2, 1, 2, 1, 1, 1, 2, 1, -1],
-    'taxonomy': ['CR-PC_LWAL-DNO_H1', 'CR_LFINF-DNO_H2', 'CR_LFINF-DUH_H2', 'CR_LFINF-DUH_H3', 'CR_LFINF-DUM_H2', 'CR_LFINF-DUM_H3', 'CR_LFM-DNO_H1', 'MCF_LWAL-DNO_H2', 'MCF_LWAL-DNO_H3', 'MCF_LWAL-DUH_H2',	'MCF_LWAL-DUH_H3', 'MCF_LWAL-DUM_H2','MCF_LWAL-DUM_H3', 'MR_LWAL-DNO_H1','MR_LWAL-DNO_H2', 'MR_LWAL-DNO_H3','MR_LWAL-DUH_H1', 'MR_LWAL-DUH_H2', 'MR_LWAL-DUH_H3', 'MR_LWAL-DUM_H1', 'MR_LWAL-DUM_H2', 'MR_LWAL-DUM_H3', 'MUR-ADO_LWAL-DNO_H2', 'MUR-ST_LWAL-DNO_H2', 'MUR_LWAL-DNO_H1', 'MUR_LWAL-DNO_H2', 'UNK_H1', 'W-WBB_LPB-DNO_H1', 'W-WLI_LWAL-DNO_H1', 'W-WLI_LWAL-DNO_H2', 'W-WS_LPB-DNO_H1', 'W-']
+    'constructioncode': ['5156', '5150', '5150', '5150', '5109', '5109', '5109', '5105', '5105', '5105', '5101', '5103', '5103', '5000', '5050', '5050', '5050'],
+    'numberofstoreys': [1, 2, 3, 1, 2, 3, 1, 1, 2, 3, 2, 1, 2, 1, 1, 2, -1],
+    'taxonomy': ['CR-PC_LWAL-DNO_H1', 'CR_LFINF-DUM_H2', 'CR_LFINF-DUM_H3', 'CR_LFM-DNO_H1', 'MCF_LWAL-DNO_H2', 'MCF_LWAL-DNO_H3', 'MR_LWAL-DNO_H1', 'MR_LWAL-DUM_H1', 'MR_LWAL-DUM_H2', 'MR_LWAL-DUM_H3', 'MUR-ADO_LWAL-DNO_H2', 'MUR_LWAL-DNO_H1', 'MUR_LWAL-DNO_H2', 'UNK_H1', 'W-WLI_LWAL-DNO_H1', 'W-WLI_LWAL-DNO_H2', 'W-']
 })
+
+
 
 class GMOKeysLookup(OasisBaseKeysLookup):
 
@@ -195,6 +223,9 @@ class GMOKeysLookup(OasisBaseKeysLookup):
         loc_df = loc_df.merge(self.vulnDict, on="taxonomy")
         pd.set_option('display.max_columns', 500)
 
+        # Enforce single taxonomy per location row (Safe guard)
+        loc_df.drop_duplicates(subset=['locperilscovered', 'loc_id'], keep='first', inplace=True)
+
         for i in range(len(loc_df)):
             record = self._get_location_record(loc_df.iloc[i])
 
@@ -248,6 +279,9 @@ class GMOKeysLookup(OasisBaseKeysLookup):
 
         loc_df = loc_df.merge(self.vulnDict, on="taxonomy")
         pd.set_option('display.max_columns', 500)
+
+        # Enforce single taxonomy per location row (Safe guard)
+        loc_df.drop_duplicates(subset=['locperilscovered', 'loc_id'], keep='first', inplace=True)
 
         results = []
         for i in range(len(loc_df)):
