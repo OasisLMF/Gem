@@ -1,7 +1,5 @@
 {
     "OASIS_API_VER":"1.7.0",
     "OASIS_UI_VER":"1.6.0",
-    "MODEL_VER":"1.7.0",
-    "MODEL_DATA_VER":"",
-    "KEYS_DATA_VER":""
+    "MODEL_VER":"1.7.0"
 }
