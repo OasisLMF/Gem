@@ -81,17 +81,20 @@ node {
 
             // TESTING VARS
             env.TEST_MAX_RUNTIME = '190'
-            env.TEST_DATA_DIR    = model_test_dir 
+            env.TEST_DATA_DIR    = model_test_dir
             env.MODEL_SUPPLIER   = model_supplier
             env.MODEL_VARIENT    = model_varient
             env.MODEL_ID         = '1'
             env.OASIS_MODEL_REPO_DIR = "${env.WORKSPACE}/${model_workspace}"
             env.OASIS_MODEL_DATA_DIR = params.MODEL_DATA
+
+            env.MODEL_MOUNT_TARGE = '/home/worker/model'
+            env.MODEL_DATA_TARGET = '/home/worker/model/model_data'
             env.COMPOSE_PROJECT_NAME = UUID.randomUUID().toString().replaceAll("-","")
 
             // Check if versions given, fallback to load from `data_version.json`
             def vers_data = readJSON file: "${env.WORKSPACE}/${model_workspace}/data_version.json"
-            //println(vers_data)  
+            //println(vers_data)
 
             // SELECT MODEL DATA
             //if (params.DATA_VER?.trim()) {
@@ -100,9 +103,9 @@ node {
             //    env.OASIS_MODEL_DATA_DIR = "${params.DATA_MNT}/${vers_data['DATA_VER']}"
             //}
 
-            // RUN PLATFORM 
+            // RUN PLATFORM
             if (params.TAG_OASIS?.trim()) {
-                env.TAG_RUN_PLATFORM = params.TAG_OASIS 
+                env.TAG_RUN_PLATFORM = params.TAG_OASIS
             } else {
                 env.TAG_RUN_PLATFORM = vers_data['OASIS_API_VER']
             }
